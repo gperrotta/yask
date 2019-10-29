@@ -265,7 +265,7 @@ else
 endif
 YK_CXXFLAGS	:=	-g -std=c++11 -Wall
 YK_CXXFLAGS	+=	$(addprefix -I,$(YK_INC_DIRS) $(YK_GEN_DIR))
-OMPFLAGS	+=	-fopenmp
+OMPFLAGS	+=	-fopenmp -fopenmp-targets=nvptx64-nvidia-cuda
 YK_CXXOPT	?=	-O3
 SWIG_CXXFLAGS	:= 	$(DBL_EPSILON_CXXFLAG)
 
@@ -542,9 +542,9 @@ $(YK_GEN_DIR)/yask_rank_loops.hpp: $(GEN_LOOPS) $(YK_CODE_FILE)
 	$(MKDIR) $(YK_GEN_DIR)
 	$(PERL) $< -output $@ $(RANK_LOOP_OPTS) $(EXTRA_LOOP_OPTS) $(EXTRA_RANK_LOOP_OPTS) "$(RANK_LOOP_CODE)"
 
-$(YK_GEN_DIR)/yask_region_loops.hpp: $(GEN_LOOPS) $(YK_CODE_FILE)
-	$(MKDIR) $(YK_GEN_DIR)
-	$(PERL) $< -output $@ $(REGION_LOOP_OPTS) $(EXTRA_LOOP_OPTS) $(EXTRA_REGION_LOOP_OPTS) "$(REGION_LOOP_CODE)"
+#$(YK_GEN_DIR)/yask_region_loops.hpp: $(GEN_LOOPS) $(YK_CODE_FILE)
+#	$(MKDIR) $(YK_GEN_DIR)
+#	$(PERL) $< -output $@ $(REGION_LOOP_OPTS) $(EXTRA_LOOP_OPTS) $(EXTRA_REGION_LOOP_OPTS) "$(REGION_LOOP_CODE)"
 
 $(YK_GEN_DIR)/yask_block_loops.hpp: $(GEN_LOOPS) $(YK_CODE_FILE)
 	$(MKDIR) $(YK_GEN_DIR)
@@ -810,7 +810,8 @@ all:
 # Should not trigger remake of stencil compiler.
 # Make this target before rebuilding YASK with any new parameters.
 clean:
-	rm -fr $(YK_OUT_DIR)
+	# rm -fr $(YK_OUT_DIR)
+	rm -fr $(YK_EXT_OBJ_DIR) # remove only jacobi's object files
 	rm -fv *.s
 	- find . $(COMM_DIR) $(COEFF_DIR) -name '*.*.o' -print -delete
 	- find . $(COMM_DIR) $(COEFF_DIR) -name '*.optrpt' -print -delete
