@@ -1,0 +1,3 @@
+yask::ScanIndices
+yask::BundlePackPtr
+'std::shared_ptr<yask::BundlePack>
